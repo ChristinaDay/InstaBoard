@@ -1,0 +1,90 @@
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
+    -system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #0f172a;
+  background-color: #f3f4f6;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #e0f2fe 0, #f9fafb 45%, #e5e7eb 100%);
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.app-root {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.75rem 1.5rem 3rem;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.app-header-text h1 {
+  margin: 0;
+  font-size: 2.3rem;
+  letter-spacing: -0.03em;
+}
+
+.app-header-text p {
+  margin: 0.3rem 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.app-main {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 1.5rem;
+  padding: 1.4rem 1.4rem 1.8rem;
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.18);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.status-text {
+  margin-top: 1.25rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.status-text.error {
+  color: #b91c1c;
+}
+
+@media (max-width: 768px) {
+  .app-root {
+    padding: 1.75rem 1rem 2rem;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .app-main {
+    padding: 1rem 1rem 1.5rem;
+  }
+}
