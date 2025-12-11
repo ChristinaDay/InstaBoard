@@ -13,6 +13,11 @@
   font-size: 0.95rem;
   outline: none;
   background: rgba(15, 23, 42, 0.04);
+  color: #111827;
+}
+
+.searchbar-input::placeholder {
+  color: #9ca3af;
 }
 
 .searchbar-input:focus {
