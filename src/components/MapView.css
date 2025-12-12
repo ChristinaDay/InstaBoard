@@ -1,0 +1,73 @@
+.mapview {
+  margin-top: 1.25rem;
+}
+
+.mapview-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.mapview-title {
+  font-weight: 600;
+  color: #111827;
+}
+
+.mapview-subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.mapview-status {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.mapview-canvas {
+  height: 70vh;
+  min-height: 420px;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.12);
+}
+
+.mapview-popup-title {
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+}
+
+.mapview-popup-subtitle {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.mapview-popup-list {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.mapview-popup-item {
+  border: none;
+  background: rgba(79, 70, 229, 0.1);
+  color: #111827;
+  border-radius: 0.6rem;
+  padding: 0.35rem 0.55rem;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.mapview-popup-item:hover {
+  background: rgba(79, 70, 229, 0.16);
+}
+
+.mapview-popup-more {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+

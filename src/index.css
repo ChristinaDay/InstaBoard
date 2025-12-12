@@ -63,6 +63,32 @@ a {
   border: 1px solid rgba(148, 163, 184, 0.35);
 }
 
+.app-view-toggle {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  margin-bottom: 1rem;
+}
+
+.app-view-toggle-btn {
+  border: none;
+  background: transparent;
+  color: #4b5563;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.app-view-toggle-btn.active {
+  background: rgba(79, 70, 229, 0.16);
+  color: #111827;
+}
+
 .status-text {
   margin-top: 1.25rem;
   color: #6b7280;

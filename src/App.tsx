@@ -4,6 +4,7 @@ import type { NormalizedSavedPost } from './types'
 import { SearchBar } from './components/SearchBar'
 import { Gallery } from './components/Gallery'
 import { ItemDetailModal } from './components/ItemDetailModal'
+import { MapView } from './components/MapView'
 import './index.css'
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
   const [videosOnly, setVideosOnly] = useState(false)
   const [hasLocationOnly, setHasLocationOnly] = useState(false)
   const [locationQuery, setLocationQuery] = useState('')
+  const [view, setView] = useState<'grid' | 'map'>('grid')
   const [selected, setSelected] = useState<NormalizedSavedPost | null>(null)
 
   const filteredPosts = useMemo(() => {
@@ -56,6 +58,27 @@ function App() {
       </header>
 
       <main className="app-main">
+        <div className="app-view-toggle" role="tablist" aria-label="View toggle">
+          <button
+            type="button"
+            className={view === 'grid' ? 'app-view-toggle-btn active' : 'app-view-toggle-btn'}
+            onClick={() => setView('grid')}
+            role="tab"
+            aria-selected={view === 'grid'}
+          >
+            Grid
+          </button>
+          <button
+            type="button"
+            className={view === 'map' ? 'app-view-toggle-btn active' : 'app-view-toggle-btn'}
+            onClick={() => setView('map')}
+            role="tab"
+            aria-selected={view === 'map'}
+          >
+            Map
+          </button>
+        </div>
+
         <SearchBar
           query={query}
           onQueryChange={setQuery}
@@ -69,8 +92,11 @@ function App() {
 
         {loading && <p className="status-text">Loading saved posts…</p>}
         {error && !loading && <p className="status-text error">Error: {error}</p>}
-        {!loading && !error && (
+        {!loading && !error && view === 'grid' && (
           <Gallery posts={filteredPosts} onSelect={(post) => setSelected(post)} />
+        )}
+        {!loading && !error && view === 'map' && (
+          <MapView posts={filteredPosts} onSelect={(post) => setSelected(post)} />
         )}
       </main>
 
