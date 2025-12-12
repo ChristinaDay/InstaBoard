@@ -23,6 +23,17 @@ function App() {
   const [categoryFilters, setCategoryFilters] = useState<AnnotationCategory[]>([])
   const [selected, setSelected] = useState<NormalizedSavedPost | null>(null)
 
+  const categoryHelp: Record<AnnotationCategory, string> = {
+    direction_identity:
+      'Direction / identity: work that reflects who you want to be professionally (patterns in what you’re drawn to).',
+    skill_building:
+      'Skill building: techniques, tools, processes, and references you want to learn or practice.',
+    opportunity_hunting:
+      'Opportunity hunting: leads to pursue—studios, artists, vendors, projects, or places you might reach out to.',
+    portfolio_planning:
+      'Portfolio planning: portfolio candidates—things you could document, recreate, or ship to show your capabilities.',
+  }
+
   const filteredPosts = useMemo(() => {
     const q = query.trim().toLowerCase()
     const locQ = locationQuery.trim().toLowerCase()
@@ -146,6 +157,7 @@ function App() {
                     : [...prev, 'direction_identity'],
                 )
               }
+              title={categoryHelp.direction_identity}
             >
               Direction / identity
             </button>
@@ -161,6 +173,7 @@ function App() {
                     : [...prev, 'skill_building'],
                 )
               }
+              title={categoryHelp.skill_building}
             >
               Skill building
             </button>
@@ -178,6 +191,7 @@ function App() {
                     : [...prev, 'opportunity_hunting'],
                 )
               }
+              title={categoryHelp.opportunity_hunting}
             >
               Opportunity hunting
             </button>
@@ -195,6 +209,7 @@ function App() {
                     : [...prev, 'portfolio_planning'],
                 )
               }
+              title={categoryHelp.portfolio_planning}
             >
               Portfolio planning
             </button>

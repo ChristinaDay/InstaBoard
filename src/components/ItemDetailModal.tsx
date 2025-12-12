@@ -32,6 +32,17 @@ export function ItemDetailModal({
 }: ItemDetailModalProps) {
   if (!post) return null
 
+  const categoryHelp: Record<AnnotationCategory, string> = {
+    direction_identity:
+      'Direction / identity: work that reflects who you want to be professionally (patterns in what you’re drawn to).',
+    skill_building:
+      'Skill building: techniques, tools, processes, and references you want to learn or practice.',
+    opportunity_hunting:
+      'Opportunity hunting: leads to pursue—studios, artists, vendors, projects, or places you might reach out to.',
+    portfolio_planning:
+      'Portfolio planning: portfolio candidates—things you could document, recreate, or ship to show your capabilities.',
+  }
+
   const [currentIndex, setCurrentIndex] = useState(0)
 
   // Reset to first slide whenever a new post is opened
@@ -141,6 +152,7 @@ export function ItemDetailModal({
                         : 'curation-chip'
                     }
                     onClick={() => toggleCategory('direction_identity')}
+                    title={categoryHelp.direction_identity}
                   >
                     Direction / identity
                   </button>
@@ -150,6 +162,7 @@ export function ItemDetailModal({
                       categories.includes('skill_building') ? 'curation-chip active' : 'curation-chip'
                     }
                     onClick={() => toggleCategory('skill_building')}
+                    title={categoryHelp.skill_building}
                   >
                     Skill building
                   </button>
@@ -161,6 +174,7 @@ export function ItemDetailModal({
                         : 'curation-chip'
                     }
                     onClick={() => toggleCategory('opportunity_hunting')}
+                    title={categoryHelp.opportunity_hunting}
                   >
                     Opportunity hunting
                   </button>
@@ -172,6 +186,7 @@ export function ItemDetailModal({
                         : 'curation-chip'
                     }
                     onClick={() => toggleCategory('portfolio_planning')}
+                    title={categoryHelp.portfolio_planning}
                   >
                     Portfolio planning
                   </button>
