@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Papa from 'papaparse'
 import type { NormalizedSavedPost, SavedPost } from '../types'
+import type { ParseResult } from 'papaparse'
 
 interface UseSavedPostsResult {
   posts: NormalizedSavedPost[]
@@ -89,22 +90,22 @@ export function useSavedPosts(): UseSavedPostsResult {
         download: true,
         header: true,
         skipEmptyLines: true,
-        complete: (results) => {
+        complete: (results: ParseResult<SavedPost>) => {
           if (results.errors && results.errors.length > 0) {
             console.error('CSV parse errors', results.errors)
           }
-          const data = (results.data ?? []).filter((row) => row && row.json_filename)
+          const data = (results.data ?? []).filter((row: SavedPost) => row && row.json_filename)
           const normalized = data.map(normalizePost)
           setPosts(normalized)
           setLoading(false)
         },
-        error: (err) => {
+        error: (err: Error) => {
           console.error('CSV load error', err)
           if (onError) {
             onError()
             return
           }
-          setError(err.message ?? `Failed to load ${path}`)
+          setError(err.message || `Failed to load ${path}`)
           setLoading(false)
         },
       })

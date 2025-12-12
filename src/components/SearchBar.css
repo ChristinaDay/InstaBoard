@@ -37,4 +37,8 @@
   accent-color: #4f46e5;
 }
 
+.searchbar-input-location {
+  flex: 0 1 280px;
+}
+
 

@@ -10,13 +10,25 @@ function App() {
   const { posts, loading, error } = useSavedPosts()
   const [query, setQuery] = useState('')
   const [videosOnly, setVideosOnly] = useState(false)
+  const [hasLocationOnly, setHasLocationOnly] = useState(false)
+  const [locationQuery, setLocationQuery] = useState('')
   const [selected, setSelected] = useState<NormalizedSavedPost | null>(null)
 
   const filteredPosts = useMemo(() => {
     const q = query.trim().toLowerCase()
+    const locQ = locationQuery.trim().toLowerCase()
 
     return posts.filter((post) => {
       if (videosOnly && !post.isVideo) return false
+
+      const hasLoc = !!(post.locationCity || post.locationRegion || post.locationName)
+      if (hasLocationOnly && !hasLoc) return false
+      if (locQ) {
+        const locHay = [post.locationName ?? '', post.locationCity ?? '', post.locationRegion ?? '']
+          .join(' ')
+          .toLowerCase()
+        if (!locHay.includes(locQ)) return false
+      }
 
       if (!q) return true
 
@@ -32,7 +44,7 @@ function App() {
 
       return haystacks.some((value) => value.toLowerCase().includes(q))
     })
-  }, [posts, query, videosOnly])
+  }, [posts, query, videosOnly, hasLocationOnly, locationQuery])
 
   return (
     <div className="app-root">
@@ -49,6 +61,10 @@ function App() {
           onQueryChange={setQuery}
           videosOnly={videosOnly}
           onVideosOnlyChange={setVideosOnly}
+          hasLocationOnly={hasLocationOnly}
+          onHasLocationOnlyChange={setHasLocationOnly}
+          locationQuery={locationQuery}
+          onLocationQueryChange={setLocationQuery}
         />
 
         {loading && <p className="status-text">Loading saved posts…</p>}
