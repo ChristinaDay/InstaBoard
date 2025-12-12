@@ -21,7 +21,11 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: radial-gradient(circle at top left, #e0f2fe 0, #f9fafb 45%, #e5e7eb 100%);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.22) 0, rgba(99, 102, 241, 0) 48%),
+    radial-gradient(circle at 85% 0%, rgba(14, 165, 233, 0.18) 0, rgba(14, 165, 233, 0) 50%),
+    radial-gradient(circle at 70% 85%, rgba(16, 185, 129, 0.12) 0, rgba(16, 185, 129, 0) 55%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 60%, #f1f5f9 100%);
   color: inherit;
 }
 
@@ -56,11 +60,11 @@ a {
 }
 
 .app-main {
-  background: rgba(255, 255, 255, 0.96);
+  background: #ffffff;
   border-radius: 1.5rem;
   padding: 1.4rem 1.4rem 1.8rem;
-  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.18);
-  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 26px 80px rgba(15, 23, 42, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.18);
 }
 
 .app-curation-bar {
@@ -80,8 +84,8 @@ a {
   gap: 0.35rem;
   padding: 0.35rem;
   border-radius: 999px;
-  background: rgba(15, 23, 42, 0.06);
-  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.22);
   margin-bottom: 1rem;
 }
 
@@ -97,7 +101,7 @@ a {
 }
 
 .app-view-toggle-btn.active {
-  background: rgba(79, 70, 229, 0.16);
+  background: rgba(99, 102, 241, 0.2);
   color: #111827;
 }
 
