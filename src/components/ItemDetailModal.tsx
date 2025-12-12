@@ -1,13 +1,31 @@
 import { useEffect, useState } from 'react'
 import type { NormalizedSavedPost } from '../types'
 import './Modal.css'
+import './Curation.css'
 
 interface ItemDetailModalProps {
   post: NormalizedSavedPost | null
   onClose: () => void
+  annotation?: {
+    tags: string[]
+    notes?: string
+    flags: { northstar?: boolean; enjoyWork?: boolean }
+  }
+  onAddTag?: (tag: string) => void
+  onRemoveTag?: (tag: string) => void
+  onSetNotes?: (notes: string) => void
+  onSetFlags?: (flags: { northstar?: boolean; enjoyWork?: boolean }) => void
 }
 
-export function ItemDetailModal({ post, onClose }: ItemDetailModalProps) {
+export function ItemDetailModal({
+  post,
+  onClose,
+  annotation,
+  onAddTag,
+  onRemoveTag,
+  onSetNotes,
+  onSetFlags,
+}: ItemDetailModalProps) {
   if (!post) return null
 
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -26,6 +44,7 @@ export function ItemDetailModal({ post, onClose }: ItemDetailModalProps) {
   const hasMultiple = totalSlides > 1
   const locationParts = [post.locationCity, post.locationRegion].filter(Boolean)
   const locationDisplay = locationParts.join(', ')
+  const [tagDraft, setTagDraft] = useState('')
 
   const goPrev = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
@@ -37,6 +56,18 @@ export function ItemDetailModal({ post, onClose }: ItemDetailModalProps) {
     event.stopPropagation()
     if (!totalSlides) return
     setCurrentIndex((index) => (index + 1) % totalSlides)
+  }
+
+  const tags = annotation?.tags ?? []
+  const notes = annotation?.notes ?? ''
+  const northstar = !!annotation?.flags?.northstar
+  const enjoyWork = !!annotation?.flags?.enjoyWork
+
+  const submitTag = () => {
+    const value = tagDraft.trim()
+    if (!value || !onAddTag) return
+    onAddTag(value)
+    setTagDraft('')
   }
 
   return (
@@ -84,6 +115,72 @@ export function ItemDetailModal({ post, onClose }: ItemDetailModalProps) {
               {post.ownerFullName && <div className="modal-owner-name">{post.ownerFullName}</div>}
               {locationDisplay && <div className="modal-owner-name">{locationDisplay}</div>}
             </div>
+
+            <div className="curation">
+              <div className="curation-flags">
+                <button
+                  type="button"
+                  className={northstar ? 'curation-flag active' : 'curation-flag'}
+                  onClick={() => onSetFlags?.({ northstar: !northstar })}
+                >
+                  Northstar
+                </button>
+                <button
+                  type="button"
+                  className={enjoyWork ? 'curation-flag active' : 'curation-flag'}
+                  onClick={() => onSetFlags?.({ enjoyWork: !enjoyWork })}
+                >
+                  Enjoy at work
+                </button>
+              </div>
+
+              <div className="curation-tags">
+                <div className="curation-tags-row">
+                  {tags.length ? (
+                    tags.map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        className="curation-tag"
+                        onClick={() => onRemoveTag?.(t)}
+                        title="Remove tag"
+                      >
+                        {t}
+                        <span className="curation-tag-x">×</span>
+                      </button>
+                    ))
+                  ) : (
+                    <div className="curation-empty">No tags yet</div>
+                  )}
+                </div>
+
+                <div className="curation-tag-add">
+                  <input
+                    className="curation-input"
+                    value={tagDraft}
+                    placeholder="Add tag (e.g. installation, finish_paint_patina)…"
+                    onChange={(e) => setTagDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') submitTag()
+                    }}
+                  />
+                  <button type="button" className="curation-add-btn" onClick={submitTag}>
+                    Add
+                  </button>
+                </div>
+              </div>
+
+              <div className="curation-notes">
+                <textarea
+                  className="curation-textarea"
+                  value={notes}
+                  placeholder="Notes: why saved, technique, how it applies to your work, next step…"
+                  onChange={(e) => onSetNotes?.(e.target.value)}
+                  rows={6}
+                />
+              </div>
+            </div>
+
             {post.captionText && <p className="modal-caption">{post.captionText}</p>}
             {post.hashtags.length > 0 && (
               <div className="modal-hashtags">
