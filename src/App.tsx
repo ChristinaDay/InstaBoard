@@ -6,6 +6,7 @@ import { Gallery } from './components/Gallery'
 import { ItemDetailModal } from './components/ItemDetailModal'
 import { MapView } from './components/MapView'
 import { useAnnotations } from './hooks/useAnnotations'
+import type { AnnotationCategory } from './storage/annotations'
 import './index.css'
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
   const [tagQuery, setTagQuery] = useState('')
   const [northstarOnly, setNorthstarOnly] = useState(false)
   const [enjoyWorkOnly, setEnjoyWorkOnly] = useState(false)
+  const [categoryFilters, setCategoryFilters] = useState<AnnotationCategory[]>([])
   const [selected, setSelected] = useState<NormalizedSavedPost | null>(null)
 
   const filteredPosts = useMemo(() => {
@@ -36,6 +38,11 @@ function App() {
         const tags = ann?.tags ?? []
         const tagHay = tags.join(' ').toLowerCase()
         if (!tagHay.includes(tagQ)) return false
+      }
+      if (categoryFilters.length > 0) {
+        const cats = ann?.categories ?? []
+        const matches = categoryFilters.some((c) => cats.includes(c))
+        if (!matches) return false
       }
 
       const hasLoc = !!(post.locationCity || post.locationRegion || post.locationName)
@@ -70,6 +77,7 @@ function App() {
     tagQuery,
     northstarOnly,
     enjoyWorkOnly,
+    categoryFilters,
     annotations,
   ])
 
@@ -123,6 +131,74 @@ function App() {
             value={tagQuery}
             onChange={(e) => setTagQuery(e.target.value)}
           />
+          <div className="app-category-filters" aria-label="Lens filters">
+            <button
+              type="button"
+              className={
+                categoryFilters.includes('direction_identity')
+                  ? 'app-category-chip active'
+                  : 'app-category-chip'
+              }
+              onClick={() =>
+                setCategoryFilters((prev) =>
+                  prev.includes('direction_identity')
+                    ? prev.filter((c) => c !== 'direction_identity')
+                    : [...prev, 'direction_identity'],
+                )
+              }
+            >
+              Direction / identity
+            </button>
+            <button
+              type="button"
+              className={
+                categoryFilters.includes('skill_building') ? 'app-category-chip active' : 'app-category-chip'
+              }
+              onClick={() =>
+                setCategoryFilters((prev) =>
+                  prev.includes('skill_building')
+                    ? prev.filter((c) => c !== 'skill_building')
+                    : [...prev, 'skill_building'],
+                )
+              }
+            >
+              Skill building
+            </button>
+            <button
+              type="button"
+              className={
+                categoryFilters.includes('opportunity_hunting')
+                  ? 'app-category-chip active'
+                  : 'app-category-chip'
+              }
+              onClick={() =>
+                setCategoryFilters((prev) =>
+                  prev.includes('opportunity_hunting')
+                    ? prev.filter((c) => c !== 'opportunity_hunting')
+                    : [...prev, 'opportunity_hunting'],
+                )
+              }
+            >
+              Opportunity hunting
+            </button>
+            <button
+              type="button"
+              className={
+                categoryFilters.includes('portfolio_planning')
+                  ? 'app-category-chip active'
+                  : 'app-category-chip'
+              }
+              onClick={() =>
+                setCategoryFilters((prev) =>
+                  prev.includes('portfolio_planning')
+                    ? prev.filter((c) => c !== 'portfolio_planning')
+                    : [...prev, 'portfolio_planning'],
+                )
+              }
+            >
+              Portfolio planning
+            </button>
+          </div>
           <label className="searchbar-toggle">
             <input
               type="checkbox"
@@ -160,6 +236,7 @@ function App() {
                 tags: annotations.get(selected.id)?.tags ?? [],
                 notes: annotations.get(selected.id)?.notes ?? '',
                 flags: annotations.get(selected.id)?.flags ?? {},
+                categories: annotations.get(selected.id)?.categories ?? [],
               }
             : undefined
         }
@@ -178,6 +255,10 @@ function App() {
         onSetFlags={(flags) => {
           if (!selected) return
           annotations.setFlags(selected.id, flags)
+        }}
+        onSetCategories={(categories) => {
+          if (!selected) return
+          annotations.setCategories(selected.id, categories)
         }}
       />
     </div>

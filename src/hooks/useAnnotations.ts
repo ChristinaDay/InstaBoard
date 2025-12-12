@@ -8,6 +8,7 @@ import {
   saveAnnotations,
   upsertAnnotation,
 } from '../storage/annotations'
+import type { AnnotationCategory } from '../storage/annotations'
 
 export function useAnnotations() {
   const [store, setStore] = useState<AnnotationStore>({})
@@ -31,6 +32,8 @@ export function useAnnotations() {
     setNotes: (postId: string, notes: string) => setStore((s) => upsertAnnotation(s, postId, { notes })),
     setFlags: (postId: string, flags: PostAnnotation['flags']) =>
       setStore((s) => upsertAnnotation(s, postId, { flags })),
+    setCategories: (postId: string, categories: AnnotationCategory[]) =>
+      setStore((s) => upsertAnnotation(s, postId, { categories })),
     addTag: (postId: string, tag: string) => setStore((s) => addTag(s, postId, tag)),
     removeTag: (postId: string, tag: string) => setStore((s) => removeTag(s, postId, tag)),
     exportJson: () => JSON.stringify(store, null, 2),

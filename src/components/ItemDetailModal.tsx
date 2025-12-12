@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { NormalizedSavedPost } from '../types'
 import './Modal.css'
 import './Curation.css'
+import type { AnnotationCategory } from '../storage/annotations'
 
 interface ItemDetailModalProps {
   post: NormalizedSavedPost | null
@@ -10,11 +11,13 @@ interface ItemDetailModalProps {
     tags: string[]
     notes?: string
     flags: { northstar?: boolean; enjoyWork?: boolean }
+    categories?: AnnotationCategory[]
   }
   onAddTag?: (tag: string) => void
   onRemoveTag?: (tag: string) => void
   onSetNotes?: (notes: string) => void
   onSetFlags?: (flags: { northstar?: boolean; enjoyWork?: boolean }) => void
+  onSetCategories?: (categories: AnnotationCategory[]) => void
 }
 
 export function ItemDetailModal({
@@ -25,6 +28,7 @@ export function ItemDetailModal({
   onRemoveTag,
   onSetNotes,
   onSetFlags,
+  onSetCategories,
 }: ItemDetailModalProps) {
   if (!post) return null
 
@@ -62,12 +66,21 @@ export function ItemDetailModal({
   const notes = annotation?.notes ?? ''
   const northstar = !!annotation?.flags?.northstar
   const enjoyWork = !!annotation?.flags?.enjoyWork
+  const categories = annotation?.categories ?? []
 
   const submitTag = () => {
     const value = tagDraft.trim()
     if (!value || !onAddTag) return
     onAddTag(value)
     setTagDraft('')
+  }
+
+  const toggleCategory = (category: AnnotationCategory) => {
+    if (!onSetCategories) return
+    const next = categories.includes(category)
+      ? categories.filter((c) => c !== category)
+      : [...categories, category]
+    onSetCategories(next)
   }
 
   return (
@@ -117,6 +130,54 @@ export function ItemDetailModal({
             </div>
 
             <div className="curation">
+              <div className="curation-categories">
+                <div className="curation-subtitle">Lens</div>
+                <div className="curation-categories-row">
+                  <button
+                    type="button"
+                    className={
+                      categories.includes('direction_identity')
+                        ? 'curation-chip active'
+                        : 'curation-chip'
+                    }
+                    onClick={() => toggleCategory('direction_identity')}
+                  >
+                    Direction / identity
+                  </button>
+                  <button
+                    type="button"
+                    className={
+                      categories.includes('skill_building') ? 'curation-chip active' : 'curation-chip'
+                    }
+                    onClick={() => toggleCategory('skill_building')}
+                  >
+                    Skill building
+                  </button>
+                  <button
+                    type="button"
+                    className={
+                      categories.includes('opportunity_hunting')
+                        ? 'curation-chip active'
+                        : 'curation-chip'
+                    }
+                    onClick={() => toggleCategory('opportunity_hunting')}
+                  >
+                    Opportunity hunting
+                  </button>
+                  <button
+                    type="button"
+                    className={
+                      categories.includes('portfolio_planning')
+                        ? 'curation-chip active'
+                        : 'curation-chip'
+                    }
+                    onClick={() => toggleCategory('portfolio_planning')}
+                  >
+                    Portfolio planning
+                  </button>
+                </div>
+              </div>
+
               <div className="curation-flags">
                 <button
                   type="button"

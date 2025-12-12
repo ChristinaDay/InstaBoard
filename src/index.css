@@ -79,6 +79,29 @@ a {
   flex: 1 1 260px;
 }
 
+.app-category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.app-category-chip {
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: #ffffff;
+  color: #374151;
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.app-category-chip.active {
+  border-color: rgba(129, 140, 248, 0.75);
+  background: rgba(99, 102, 241, 0.14);
+  color: #111827;
+}
+
 .app-view-toggle {
   display: inline-flex;
   gap: 0.35rem;

@@ -3,32 +3,82 @@ export type AnnotationFlags = {
   enjoyWork?: boolean
 }
 
+export type AnnotationCategory =
+  | 'direction_identity'
+  | 'skill_building'
+  | 'opportunity_hunting'
+  | 'portfolio_planning'
+
 export type PostAnnotation = {
   postId: string
   tags: string[]
   notes?: string
   flags: AnnotationFlags
+  categories: AnnotationCategory[]
   updatedAt: string // ISO
 }
 
 export type AnnotationStore = Record<string, PostAnnotation>
 
-const STORAGE_KEY = 'instaboard_annotations_v1'
+const STORAGE_KEY_V1 = 'instaboard_annotations_v1'
+const STORAGE_KEY_V2 = 'instaboard_annotations_v2'
+
+function normalizeCategories(value: unknown): AnnotationCategory[] {
+  const allowed: AnnotationCategory[] = [
+    'direction_identity',
+    'skill_building',
+    'opportunity_hunting',
+    'portfolio_planning',
+  ]
+
+  if (!Array.isArray(value)) return []
+  const set = new Set<AnnotationCategory>()
+  for (const item of value) {
+    if (typeof item !== 'string') continue
+    const normalized = item.trim().toLowerCase()
+    const match = allowed.find((c) => c === normalized)
+    if (match) set.add(match)
+  }
+  return Array.from(set)
+}
 
 export function loadAnnotations(): AnnotationStore {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return {}
-    const parsed = JSON.parse(raw) as unknown
+    const rawV2 = localStorage.getItem(STORAGE_KEY_V2)
+    if (rawV2) {
+      const parsed = JSON.parse(rawV2) as unknown
+      if (!parsed || typeof parsed !== 'object') return {}
+      return parsed as AnnotationStore
+    }
+
+    // Migrate v1 → v2 if present
+    const rawV1 = localStorage.getItem(STORAGE_KEY_V1)
+    if (!rawV1) return {}
+    const parsed = JSON.parse(rawV1) as unknown
     if (!parsed || typeof parsed !== 'object') return {}
-    return parsed as AnnotationStore
+
+    const store = parsed as Record<string, any>
+    const migrated: AnnotationStore = {}
+    for (const [postId, ann] of Object.entries(store)) {
+      migrated[postId] = {
+        postId,
+        tags: Array.isArray(ann?.tags) ? ann.tags : [],
+        notes: typeof ann?.notes === 'string' ? ann.notes : '',
+        flags: typeof ann?.flags === 'object' && ann?.flags ? ann.flags : {},
+        categories: [],
+        updatedAt: typeof ann?.updatedAt === 'string' ? ann.updatedAt : new Date().toISOString(),
+      }
+    }
+    // Persist migration
+    saveAnnotations(migrated)
+    return migrated
   } catch {
     return {}
   }
 }
 
 export function saveAnnotations(store: AnnotationStore) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(store))
+  localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(store))
 }
 
 function normalizeTag(tag: string): string {
@@ -50,11 +100,14 @@ export function upsertAnnotation(
     a.localeCompare(b),
   )
 
+  const categories = normalizeCategories(patch.categories ?? current?.categories ?? [])
+
   const next: PostAnnotation = {
     postId,
     tags,
     notes: patch.notes ?? current?.notes ?? '',
     flags: { ...(current?.flags ?? {}), ...(patch.flags ?? {}) },
+    categories,
     updatedAt: new Date().toISOString(),
   }
 

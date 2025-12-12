@@ -4,6 +4,35 @@
   gap: 0.9rem;
 }
 
+.curation-subtitle {
+  color: #9ca3af;
+  font-size: 0.8rem;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.01em;
+}
+
+.curation-categories-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.curation-chip {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e5e7eb;
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.curation-chip.active {
+  border-color: rgba(129, 140, 248, 0.75);
+  background: rgba(99, 102, 241, 0.24);
+  color: #e0e7ff;
+}
+
 .curation-flags {
   display: flex;
   flex-wrap: wrap;
