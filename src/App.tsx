@@ -25,6 +25,9 @@ function App() {
         post.ownerUsername,
         post.shortcode,
         post.hashtags.join(' '),
+        post.locationName ?? '',
+        post.locationCity ?? '',
+        post.locationRegion ?? '',
       ]
 
       return haystacks.some((value) => value.toLowerCase().includes(q))

@@ -24,6 +24,8 @@ export function ItemDetailModal({ post, onClose }: ItemDetailModalProps) {
   const isVideo = !!currentFile && /\.(mp4|mov|webm|m4v)$/i.test(currentFile)
   const src = currentFile ? `/saved/${currentFile}` : undefined
   const hasMultiple = totalSlides > 1
+  const locationParts = [post.locationCity, post.locationRegion].filter(Boolean)
+  const locationDisplay = locationParts.join(', ')
 
   const goPrev = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
@@ -80,6 +82,7 @@ export function ItemDetailModal({ post, onClose }: ItemDetailModalProps) {
             <div className="modal-owner">
               <div className="modal-owner-username">@{post.ownerUsername}</div>
               {post.ownerFullName && <div className="modal-owner-name">{post.ownerFullName}</div>}
+              {locationDisplay && <div className="modal-owner-name">{locationDisplay}</div>}
             </div>
             {post.captionText && <p className="modal-caption">{post.captionText}</p>}
             {post.hashtags.length > 0 && (

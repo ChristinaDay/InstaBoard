@@ -68,6 +68,9 @@ function normalizePost(raw: SavedPost): NormalizedSavedPost {
     captionText: raw.caption_text ?? '',
     hashtags,
     mediaFiles,
+    locationName: raw.location_name || undefined,
+    locationCity: raw.location_city || undefined,
+    locationRegion: raw.location_region || undefined,
     raw,
   }
 }
@@ -81,25 +84,34 @@ export function useSavedPosts(): UseSavedPostsResult {
     setLoading(true)
     setError(null)
 
-    Papa.parse<SavedPost>('/saved_index.csv', {
-      download: true,
-      header: true,
-      skipEmptyLines: true,
-      complete: (results) => {
-        if (results.errors && results.errors.length > 0) {
-          console.error('CSV parse errors', results.errors)
-        }
-        const data = (results.data ?? []).filter((row) => row && row.json_filename)
-        const normalized = data.map(normalizePost)
-        setPosts(normalized)
-        setLoading(false)
-      },
-      error: (err) => {
-        console.error('CSV load error', err)
-        setError(err.message ?? 'Failed to load saved_index.csv')
-        setLoading(false)
-      },
-    })
+    const parseCsv = (path: string, onError?: () => void) => {
+      Papa.parse<SavedPost>(path, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          if (results.errors && results.errors.length > 0) {
+            console.error('CSV parse errors', results.errors)
+          }
+          const data = (results.data ?? []).filter((row) => row && row.json_filename)
+          const normalized = data.map(normalizePost)
+          setPosts(normalized)
+          setLoading(false)
+        },
+        error: (err) => {
+          console.error('CSV load error', err)
+          if (onError) {
+            onError()
+            return
+          }
+          setError(err.message ?? `Failed to load ${path}`)
+          setLoading(false)
+        },
+      })
+    }
+
+    // Prefer enriched CSV (adds location columns) when present; fall back to the original.
+    parseCsv('/saved_index_with_location.csv', () => parseCsv('/saved_index.csv'))
   }, [])
 
   return { posts, loading, error }

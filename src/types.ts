@@ -24,6 +24,10 @@ export interface SavedPost {
   caption_text: string
   hashtags: string
   media_files: string
+  // Optional: can be added by enriching saved_index.csv from local JSON metadata
+  location_name?: string
+  location_city?: string
+  location_region?: string
 }
 
 export interface NormalizedSavedPost {
@@ -47,6 +51,9 @@ export interface NormalizedSavedPost {
   captionText: string
   hashtags: string[]
   mediaFiles: string[]
+  locationName?: string
+  locationCity?: string
+  locationRegion?: string
   raw: SavedPost
 }
 

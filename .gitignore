@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local Instagram export data (do not commit)
+public/saved
+public/saved_index.csv
+public/saved_index_with_location.csv
