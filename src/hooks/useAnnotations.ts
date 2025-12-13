@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { AnnotationStore, PostAnnotation } from '../storage/annotations'
 import {
   addTag,
+  bulkAddTag,
   getAllTags,
   loadAnnotations,
   removeTag,
@@ -36,6 +37,11 @@ export function useAnnotations() {
       setStore((s) => upsertAnnotation(s, postId, { categories })),
     addTag: (postId: string, tag: string) => setStore((s) => addTag(s, postId, tag)),
     removeTag: (postId: string, tag: string) => setStore((s) => removeTag(s, postId, tag)),
+    bulkAddTag: (postIds: string[], tag: string) =>
+      setStore((s) => {
+        const result = bulkAddTag(s, postIds, tag)
+        return result.store
+      }),
     exportJson: () => JSON.stringify(store, null, 2),
     importJson: (jsonString: string) => {
       const parsed = JSON.parse(jsonString) as AnnotationStore
