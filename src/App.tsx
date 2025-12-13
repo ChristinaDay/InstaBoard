@@ -21,7 +21,7 @@ function App() {
   const [northstarOnly, setNorthstarOnly] = useState(false)
   const [enjoyWorkOnly, setEnjoyWorkOnly] = useState(false)
   const [categoryFilters, setCategoryFilters] = useState<AnnotationCategory[]>([])
-  const [hideUncategorized, setHideUncategorized] = useState(false)
+  const [careerLensesOnly, setCareerLensesOnly] = useState(false)
   const [selected, setSelected] = useState<NormalizedSavedPost | null>(null)
   const [autoTagStatus, setAutoTagStatus] = useState<string>('')
 
@@ -52,7 +52,7 @@ function App() {
         const tagHay = tags.join(' ').toLowerCase()
         if (!tagHay.includes(tagQ)) return false
       }
-      if (hideUncategorized) {
+      if (careerLensesOnly) {
         const cats = ann?.categories ?? []
         if (cats.length === 0) return false
       }
@@ -95,7 +95,7 @@ function App() {
     northstarOnly,
     enjoyWorkOnly,
     categoryFilters,
-    hideUncategorized,
+    careerLensesOnly,
     annotations,
   ])
 
@@ -258,13 +258,16 @@ function App() {
             />
             <span>Enjoy at work only</span>
           </label>
-          <label className="searchbar-toggle" title="Only show posts you’ve assigned to at least one Lens category.">
+          <label
+            className="searchbar-toggle"
+            title="Only show posts you’ve assigned to at least one career Lens (Direction/identity, Skill building, Opportunity hunting, Portfolio planning)."
+          >
             <input
               type="checkbox"
-              checked={hideUncategorized}
-              onChange={(e) => setHideUncategorized(e.target.checked)}
+              checked={careerLensesOnly}
+              onChange={(e) => setCareerLensesOnly(e.target.checked)}
             />
-            <span>Hide uncategorized</span>
+            <span>Career lenses only</span>
           </label>
           <button
             type="button"
