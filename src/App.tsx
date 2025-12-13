@@ -21,6 +21,7 @@ function App() {
   const [northstarOnly, setNorthstarOnly] = useState(false)
   const [enjoyWorkOnly, setEnjoyWorkOnly] = useState(false)
   const [categoryFilters, setCategoryFilters] = useState<AnnotationCategory[]>([])
+  const [hideUncategorized, setHideUncategorized] = useState(false)
   const [selected, setSelected] = useState<NormalizedSavedPost | null>(null)
   const [autoTagStatus, setAutoTagStatus] = useState<string>('')
 
@@ -50,6 +51,10 @@ function App() {
         const tags = ann?.tags ?? []
         const tagHay = tags.join(' ').toLowerCase()
         if (!tagHay.includes(tagQ)) return false
+      }
+      if (hideUncategorized) {
+        const cats = ann?.categories ?? []
+        if (cats.length === 0) return false
       }
       if (categoryFilters.length > 0) {
         const cats = ann?.categories ?? []
@@ -90,6 +95,7 @@ function App() {
     northstarOnly,
     enjoyWorkOnly,
     categoryFilters,
+    hideUncategorized,
     annotations,
   ])
 
@@ -251,6 +257,14 @@ function App() {
               onChange={(e) => setEnjoyWorkOnly(e.target.checked)}
             />
             <span>Enjoy at work only</span>
+          </label>
+          <label className="searchbar-toggle" title="Only show posts you’ve assigned to at least one Lens category.">
+            <input
+              type="checkbox"
+              checked={hideUncategorized}
+              onChange={(e) => setHideUncategorized(e.target.checked)}
+            />
+            <span>Hide uncategorized</span>
           </label>
           <button
             type="button"
