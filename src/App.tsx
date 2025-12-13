@@ -22,6 +22,9 @@ function App() {
   const [categoryFilters, setCategoryFilters] = useState<AnnotationCategory[]>([])
   const [careerLensesOnly, setCareerLensesOnly] = useState(false)
   const [selected, setSelected] = useState<NormalizedSavedPost | null>(null)
+  const [selectionMode, setSelectionMode] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [bulkTagDraft, setBulkTagDraft] = useState('')
 
   const categoryHelp: Record<AnnotationCategory, string> = {
     direction_identity:
@@ -95,6 +98,28 @@ function App() {
     annotations,
   ])
 
+  const toggleSelected = (post: NormalizedSavedPost) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(post.id)) next.delete(post.id)
+      else next.add(post.id)
+      return next
+    })
+  }
+
+  const clearSelection = () => setSelectedIds(new Set())
+
+  const selectAllFiltered = () => setSelectedIds(new Set(filteredPosts.map((p) => p.id)))
+
+  const applyBulkTag = () => {
+    const tag = bulkTagDraft.trim()
+    if (!tag) return
+    const ids = Array.from(selectedIds)
+    if (ids.length === 0) return
+    annotations.bulkAddTag(ids, tag)
+    setBulkTagDraft('')
+  }
+
   return (
     <div className="app-root">
       <header className="app-header">
@@ -124,6 +149,48 @@ function App() {
           >
             Map
           </button>
+        </div>
+
+        <div className="app-selectbar">
+          <label className="searchbar-toggle" title="Select multiple posts to apply a tag in bulk.">
+            <input
+              type="checkbox"
+              checked={selectionMode}
+              onChange={(e) => {
+                const enabled = e.target.checked
+                setSelectionMode(enabled)
+                if (!enabled) clearSelection()
+              }}
+            />
+            <span>Select</span>
+          </label>
+
+          {selectionMode && (
+            <>
+              <span className="app-selectbar-count">{selectedIds.size} selected</span>
+              <button type="button" className="app-selectbar-btn" onClick={selectAllFiltered}>
+                Select all (filtered)
+              </button>
+              <button type="button" className="app-selectbar-btn" onClick={clearSelection}>
+                Clear
+              </button>
+              <div className="app-selectbar-bulk">
+                <input
+                  className="searchbar-input app-selectbar-input"
+                  type="search"
+                  placeholder="Add tag to selected…"
+                  value={bulkTagDraft}
+                  onChange={(e) => setBulkTagDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') applyBulkTag()
+                  }}
+                />
+                <button type="button" className="app-selectbar-apply" onClick={applyBulkTag}>
+                  Apply
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         <SearchBar
@@ -241,7 +308,13 @@ function App() {
         {loading && <p className="status-text">Loading saved posts…</p>}
         {error && !loading && <p className="status-text error">Error: {error}</p>}
         {!loading && !error && view === 'grid' && (
-          <Gallery posts={filteredPosts} onSelect={(post) => setSelected(post)} />
+          <Gallery
+            posts={filteredPosts}
+            onSelect={(post) => setSelected(post)}
+            selectionMode={selectionMode}
+            selectedIds={selectedIds}
+            onToggleSelected={toggleSelected}
+          />
         )}
         {!loading && !error && view === 'map' && (
           <MapView posts={filteredPosts} onSelect={(post) => setSelected(post)} />

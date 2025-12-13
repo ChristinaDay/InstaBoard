@@ -75,6 +75,58 @@ a {
   align-items: center;
 }
 
+.app-selectbar {
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.app-selectbar-count {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.app-selectbar-btn {
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: #ffffff;
+  color: #374151;
+  border-radius: 999px;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.app-selectbar-btn:hover {
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.app-selectbar-bulk {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.app-selectbar-input {
+  flex: 1 1 220px;
+}
+
+.app-selectbar-apply {
+  border: 1px solid rgba(99, 102, 241, 0.26);
+  background: rgba(99, 102, 241, 0.12);
+  color: #111827;
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.app-selectbar-apply:hover {
+  background: rgba(99, 102, 241, 0.16);
+}
+
 .app-curation-tag-input {
   flex: 1 1 260px;
 }

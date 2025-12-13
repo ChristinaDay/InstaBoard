@@ -7,6 +7,9 @@ import './Gallery.css'
 interface GalleryProps {
   posts: NormalizedSavedPost[]
   onSelect: (post: NormalizedSavedPost) => void
+  selectionMode?: boolean
+  selectedIds?: Set<string>
+  onToggleSelected?: (post: NormalizedSavedPost) => void
 }
 
 const breakpointColumns = {
@@ -17,7 +20,7 @@ const breakpointColumns = {
   480: 1,
 }
 
-export function Gallery({ posts, onSelect }: GalleryProps) {
+export function Gallery({ posts, onSelect, selectionMode = false, selectedIds, onToggleSelected }: GalleryProps) {
   if (!posts.length) {
     return <p className="gallery-empty">No saved posts match your filters.</p>
   }
@@ -30,7 +33,14 @@ export function Gallery({ posts, onSelect }: GalleryProps) {
         columnClassName="masonry-grid-column"
       >
         {posts.map((post) => (
-          <GalleryItem key={post.id} post={post} onSelect={onSelect} />
+          <GalleryItem
+            key={post.id}
+            post={post}
+            onSelect={onSelect}
+            selectionMode={selectionMode}
+            isSelected={selectedIds?.has(post.id) ?? false}
+            onToggleSelected={onToggleSelected}
+          />
         ))}
       </Masonry>
     </div>
