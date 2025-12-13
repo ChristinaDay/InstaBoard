@@ -37,11 +37,15 @@ export function useAnnotations() {
       setStore((s) => upsertAnnotation(s, postId, { categories })),
     addTag: (postId: string, tag: string) => setStore((s) => addTag(s, postId, tag)),
     removeTag: (postId: string, tag: string) => setStore((s) => removeTag(s, postId, tag)),
-    bulkAddTag: (postIds: string[], tag: string) =>
+    bulkAddTag: (postIds: string[], tag: string): number => {
+      let changed = 0
       setStore((s) => {
         const result = bulkAddTag(s, postIds, tag)
+        changed = result.changed
         return result.store
-      }),
+      })
+      return changed
+    },
     exportJson: () => JSON.stringify(store, null, 2),
     importJson: (jsonString: string) => {
       const parsed = JSON.parse(jsonString) as AnnotationStore

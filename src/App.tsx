@@ -25,6 +25,7 @@ function App() {
   const [selectionMode, setSelectionMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkTagDraft, setBulkTagDraft] = useState('')
+  const [bulkTagStatus, setBulkTagStatus] = useState('')
 
   const categoryHelp: Record<AnnotationCategory, string> = {
     direction_identity:
@@ -118,6 +119,8 @@ function App() {
     if (ids.length === 0) return
     annotations.bulkAddTag(ids, tag)
     setBulkTagDraft('')
+    setBulkTagStatus(`Added tag “${tag}” to ${ids.length} posts.`)
+    window.setTimeout(() => setBulkTagStatus(''), 3500)
   }
 
   return (
@@ -143,7 +146,11 @@ function App() {
           <button
             type="button"
             className={view === 'map' ? 'app-view-toggle-btn active' : 'app-view-toggle-btn'}
-            onClick={() => setView('map')}
+            onClick={() => {
+              setView('map')
+              setSelectionMode(false)
+              clearSelection()
+            }}
             role="tab"
             aria-selected={view === 'map'}
           >
@@ -151,47 +158,63 @@ function App() {
           </button>
         </div>
 
-        <div className="app-selectbar">
-          <label className="searchbar-toggle" title="Select multiple posts to apply a tag in bulk.">
-            <input
-              type="checkbox"
-              checked={selectionMode}
-              onChange={(e) => {
-                const enabled = e.target.checked
-                setSelectionMode(enabled)
-                if (!enabled) clearSelection()
-              }}
-            />
-            <span>Select</span>
-          </label>
+        {view === 'grid' && (
+          <div className="app-selectbar">
+            <label className="searchbar-toggle" title="Select multiple posts to apply a tag in bulk.">
+              <input
+                type="checkbox"
+                checked={selectionMode}
+                onChange={(e) => {
+                  const enabled = e.target.checked
+                  setSelectionMode(enabled)
+                  setBulkTagStatus('')
+                  if (!enabled) clearSelection()
+                }}
+              />
+              <span>Select</span>
+            </label>
 
-          {selectionMode && (
-            <>
-              <span className="app-selectbar-count">{selectedIds.size} selected</span>
-              <button type="button" className="app-selectbar-btn" onClick={selectAllFiltered}>
-                Select all (filtered)
-              </button>
-              <button type="button" className="app-selectbar-btn" onClick={clearSelection}>
-                Clear
-              </button>
-              <div className="app-selectbar-bulk">
-                <input
-                  className="searchbar-input app-selectbar-input"
-                  type="search"
-                  placeholder="Add tag to selected…"
-                  value={bulkTagDraft}
-                  onChange={(e) => setBulkTagDraft(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') applyBulkTag()
-                  }}
-                />
-                <button type="button" className="app-selectbar-apply" onClick={applyBulkTag}>
-                  Apply
+            {selectionMode && (
+              <>
+                <span className="app-selectbar-count">{selectedIds.size} selected</span>
+                <button type="button" className="app-selectbar-btn" onClick={selectAllFiltered}>
+                  Select all (filtered)
                 </button>
-              </div>
-            </>
-          )}
-        </div>
+                <button type="button" className="app-selectbar-btn" onClick={clearSelection}>
+                  Clear
+                </button>
+                <div className="app-selectbar-bulk">
+                  <input
+                    className="searchbar-input app-selectbar-input"
+                    type="search"
+                    placeholder="Add tag to selected…"
+                    value={bulkTagDraft}
+                    onChange={(e) => setBulkTagDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') applyBulkTag()
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="app-selectbar-apply"
+                    onClick={applyBulkTag}
+                    disabled={selectedIds.size === 0 || !bulkTagDraft.trim()}
+                    title={
+                      selectedIds.size === 0
+                        ? 'Select at least one post'
+                        : !bulkTagDraft.trim()
+                          ? 'Enter a tag'
+                          : 'Apply tag to selected posts'
+                    }
+                  >
+                    Apply
+                  </button>
+                </div>
+                {bulkTagStatus && <span className="app-selectbar-status">{bulkTagStatus}</span>}
+              </>
+            )}
+          </div>
+        )}
 
         <SearchBar
           query={query}

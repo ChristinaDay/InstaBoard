@@ -127,6 +127,16 @@ a {
   background: rgba(99, 102, 241, 0.16);
 }
 
+.app-selectbar-apply:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.app-selectbar-status {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
 .app-curation-tag-input {
   flex: 1 1 260px;
 }
