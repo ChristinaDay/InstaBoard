@@ -19,7 +19,6 @@ function App() {
   const [view, setView] = useState<'grid' | 'map'>('grid')
   const [tagQuery, setTagQuery] = useState('')
   const [northstarOnly, setNorthstarOnly] = useState(false)
-  const [enjoyWorkOnly, setEnjoyWorkOnly] = useState(false)
   const [categoryFilters, setCategoryFilters] = useState<AnnotationCategory[]>([])
   const [careerLensesOnly, setCareerLensesOnly] = useState(false)
   const [selected, setSelected] = useState<NormalizedSavedPost | null>(null)
@@ -45,7 +44,6 @@ function App() {
 
       const ann = annotations.get(post.id)
       if (northstarOnly && !ann?.flags?.northstar) return false
-      if (enjoyWorkOnly && !ann?.flags?.enjoyWork) return false
       if (tagQ) {
         const tags = ann?.tags ?? []
         const tagHay = tags.join(' ').toLowerCase()
@@ -92,7 +90,6 @@ function App() {
     locationQuery,
     tagQuery,
     northstarOnly,
-    enjoyWorkOnly,
     categoryFilters,
     careerLensesOnly,
     annotations,
@@ -227,14 +224,6 @@ function App() {
               onChange={(e) => setNorthstarOnly(e.target.checked)}
             />
             <span>Northstar only</span>
-          </label>
-          <label className="searchbar-toggle">
-            <input
-              type="checkbox"
-              checked={enjoyWorkOnly}
-              onChange={(e) => setEnjoyWorkOnly(e.target.checked)}
-            />
-            <span>Enjoy at work only</span>
           </label>
           <label
             className="searchbar-toggle"
