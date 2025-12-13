@@ -23,7 +23,6 @@ function App() {
   const [categoryFilters, setCategoryFilters] = useState<AnnotationCategory[]>([])
   const [careerLensesOnly, setCareerLensesOnly] = useState(false)
   const [selected, setSelected] = useState<NormalizedSavedPost | null>(null)
-  const [autoTagStatus, setAutoTagStatus] = useState<string>('')
 
   const categoryHelp: Record<AnnotationCategory, string> = {
     direction_identity:
@@ -98,27 +97,6 @@ function App() {
     careerLensesOnly,
     annotations,
   ])
-
-  const autoTagNailArt = () => {
-    const keywordRegex =
-      /(^|[^a-z])(nail|nails|nailart|nail_art|naildesign|nail_design|nailinspo|manicure|gelx|gel_x|gelnails|acrylicnails)([^a-z]|$)/i
-
-    const matches: string[] = []
-    for (const post of posts) {
-      const text = `${post.captionText} ${post.hashtags.join(' ')}`.toLowerCase()
-      if (keywordRegex.test(text)) matches.push(post.id)
-    }
-
-    const before = matches.length
-    if (before === 0) {
-      setAutoTagStatus('No nail art matches found.')
-      return
-    }
-
-    annotations.bulkAddTag(matches, 'nail_art')
-    setAutoTagStatus(`Auto-tagged nail_art on ${before} posts (keyword match).`)
-    setTimeout(() => setAutoTagStatus(''), 4500)
-  }
 
   return (
     <div className="app-root">
@@ -269,15 +247,6 @@ function App() {
             />
             <span>Career lenses only</span>
           </label>
-          <button
-            type="button"
-            className="app-action-btn"
-            onClick={autoTagNailArt}
-            title="Adds tag 'nail_art' to posts whose caption/hashtags match nail keywords."
-          >
-            Auto-tag nail art
-        </button>
-          {autoTagStatus && <span className="app-action-status">{autoTagStatus}</span>}
         </div>
 
         {loading && <p className="status-text">Loading saved posts…</p>}

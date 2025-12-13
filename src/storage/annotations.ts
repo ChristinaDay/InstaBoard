@@ -128,31 +128,6 @@ export function addTag(store: AnnotationStore, postId: string, tag: string): Ann
   return upsertAnnotation(store, postId, { tags: nextTags })
 }
 
-export function bulkAddTag(
-  store: AnnotationStore,
-  postIds: string[],
-  tag: string,
-): { store: AnnotationStore; changed: number } {
-  const normalizedTag = normalizeTag(tag)
-  if (!normalizedTag) return { store, changed: 0 }
-
-  let changed = 0
-  const next: AnnotationStore = { ...store }
-
-  for (const postId of postIds) {
-    const current = next[postId]
-    const currentTags = current?.tags ?? []
-    if (currentTags.includes(normalizedTag)) continue
-
-    const updated = upsertAnnotation(next, postId, { tags: [...currentTags, normalizedTag] })
-    // upsertAnnotation clones; keep reference for subsequent updates
-    Object.assign(next, updated)
-    changed += 1
-  }
-
-  return { store: next, changed }
-}
-
 export function getAllTags(store: AnnotationStore): string[] {
   const set = new Set<string>()
   for (const ann of Object.values(store)) {
