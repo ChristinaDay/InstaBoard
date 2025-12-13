@@ -13,13 +13,22 @@ import type { AnnotationCategory } from '../storage/annotations'
 
 export function useAnnotations() {
   const [store, setStore] = useState<AnnotationStore>({})
+  const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
     setStore(loadAnnotations())
+    setHydrated(true)
   }, [])
 
   useEffect(() => {
-    saveAnnotations(store)
+    // In React StrictMode/dev, effects may run in a way that could persist the empty initial store
+    // before we've loaded from localStorage. Guard to avoid wiping existing annotations.
+    if (!hydrated) return
+    try {
+      saveAnnotations(store)
+    } catch (err) {
+      console.error('Failed to save annotations', err)
+    }
   }, [store])
 
   const allTags = useMemo(() => getAllTags(store), [store])
@@ -37,15 +46,11 @@ export function useAnnotations() {
       setStore((s) => upsertAnnotation(s, postId, { categories })),
     addTag: (postId: string, tag: string) => setStore((s) => addTag(s, postId, tag)),
     removeTag: (postId: string, tag: string) => setStore((s) => removeTag(s, postId, tag)),
-    bulkAddTag: (postIds: string[], tag: string): number => {
-      let changed = 0
+    bulkAddTag: (postIds: string[], tag: string) =>
       setStore((s) => {
         const result = bulkAddTag(s, postIds, tag)
-        changed = result.changed
         return result.store
-      })
-      return changed
-    },
+      }),
     exportJson: () => JSON.stringify(store, null, 2),
     importJson: (jsonString: string) => {
       const parsed = JSON.parse(jsonString) as AnnotationStore
