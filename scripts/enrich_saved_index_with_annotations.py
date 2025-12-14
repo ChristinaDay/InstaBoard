@@ -59,11 +59,28 @@ def main() -> int:
     parser.add_argument("--output-csv", default="public/saved_index_enriched.csv")
     args = parser.parse_args()
 
-    input_csv = args.input_csv if os.path.exists(args.input_csv) else args.fallback_input_csv
+    input_csv = os.path.expanduser(args.input_csv)
+    fallback_input_csv = os.path.expanduser(args.fallback_input_csv)
+    output_csv = os.path.expanduser(args.output_csv)
+
+    annotations_json = os.path.expanduser(args.annotations_json)
+    if not os.path.exists(annotations_json) and os.path.basename(annotations_json) == "annotations.json":
+        # Convenience: if you just downloaded it from the app, it'll likely be in Downloads.
+        downloads_guess = os.path.expanduser("~/Downloads/annotations.json")
+        if os.path.exists(downloads_guess):
+            annotations_json = downloads_guess
+
+    input_csv = input_csv if os.path.exists(input_csv) else fallback_input_csv
     if not os.path.exists(input_csv):
         raise SystemExit(f"Input CSV not found: {input_csv}")
 
-    ann_store = load_annotations(args.annotations_json)
+    if not os.path.exists(annotations_json):
+        raise SystemExit(
+            "annotations.json not found. Provide --annotations-json PATH (e.g. ~/Downloads/annotations.json) "
+            "or run Export annotations and place the file in the project root."
+        )
+
+    ann_store = load_annotations(annotations_json)
 
     with open(input_csv, newline="", encoding="utf-8") as f_in:
         reader = csv.DictReader(f_in)
@@ -77,8 +94,8 @@ def main() -> int:
 
         rows = list(reader)
 
-    os.makedirs(os.path.dirname(args.output_csv) or ".", exist_ok=True)
-    with open(args.output_csv, "w", newline="", encoding="utf-8") as f_out:
+    os.makedirs(os.path.dirname(output_csv) or ".", exist_ok=True)
+    with open(output_csv, "w", newline="", encoding="utf-8") as f_out:
         writer = csv.DictWriter(f_out, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
 
@@ -109,7 +126,7 @@ def main() -> int:
 
             writer.writerow(row)
 
-    print(f"Wrote {args.output_csv} (rows={len(rows)}, rows_with_annotations={updated})")
+    print(f"Wrote {output_csv} (rows={len(rows)}, rows_with_annotations={updated})")
     return 0
 
 
