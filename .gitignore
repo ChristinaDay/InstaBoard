@@ -27,3 +27,5 @@ dist-ssr
 public/saved
 public/saved_index.csv
 public/saved_index_with_location.csv
+public/saved_index_enriched.csv
+annotations.json

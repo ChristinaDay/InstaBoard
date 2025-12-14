@@ -83,6 +83,14 @@ a {
   align-items: center;
 }
 
+.app-tools {
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
 .app-selectbar-count {
   color: #6b7280;
   font-size: 0.9rem;

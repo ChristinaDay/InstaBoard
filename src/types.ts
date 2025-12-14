@@ -28,6 +28,11 @@ export interface SavedPost {
   location_name?: string
   location_city?: string
   location_region?: string
+  // Optional: can be added by enriching saved_index.csv with local annotations
+  my_tags?: string
+  my_notes?: string
+  my_northstar?: string
+  my_lenses?: string
 }
 
 export interface NormalizedSavedPost {
@@ -54,6 +59,10 @@ export interface NormalizedSavedPost {
   locationName?: string
   locationCity?: string
   locationRegion?: string
+  myTags?: string[]
+  myNotes?: string
+  myNorthstar?: boolean
+  myLenses?: string[]
   raw: SavedPost
 }
 

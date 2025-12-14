@@ -48,6 +48,18 @@ function normalizePost(raw: SavedPost): NormalizedSavedPost {
       ? new Date(raw.taken_at_iso)
       : null
 
+  const myTags =
+    raw.my_tags
+      ?.split(/[,\s]+/)
+      .map((s) => s.trim())
+      .filter(Boolean) ?? []
+
+  const myLenses =
+    raw.my_lenses
+      ?.split(/[,\s]+/)
+      .map((s) => s.trim())
+      .filter(Boolean) ?? []
+
   return {
     id: raw.shortcode || raw.json_filename,
     shortcode: raw.shortcode,
@@ -72,6 +84,10 @@ function normalizePost(raw: SavedPost): NormalizedSavedPost {
     locationName: raw.location_name || undefined,
     locationCity: raw.location_city || undefined,
     locationRegion: raw.location_region || undefined,
+    myTags: myTags.length ? myTags : undefined,
+    myNotes: raw.my_notes || undefined,
+    myNorthstar: toBool(raw.my_northstar),
+    myLenses: myLenses.length ? myLenses : undefined,
     raw,
   }
 }
@@ -111,8 +127,10 @@ export function useSavedPosts(): UseSavedPostsResult {
       })
     }
 
-    // Prefer enriched CSV (adds location columns) when present; fall back to the original.
-    parseCsv('/saved_index_with_location.csv', () => parseCsv('/saved_index.csv'))
+    // Prefer enriched CSV (annotations), then location, then original.
+    parseCsv('/saved_index_enriched.csv', () =>
+      parseCsv('/saved_index_with_location.csv', () => parseCsv('/saved_index.csv')),
+    )
   }, [])
 
   return { posts, loading, error }

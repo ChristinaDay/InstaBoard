@@ -39,6 +39,17 @@ export function useAnnotations() {
     store,
     allTags,
     get,
+    isEmpty: () => Object.keys(store).length === 0,
+    mergeSeed: (seed: AnnotationStore) =>
+      setStore((current) => {
+        if (!seed || typeof seed !== 'object') return current
+        const next: AnnotationStore = { ...current }
+        for (const [postId, ann] of Object.entries(seed)) {
+          if (next[postId]) continue
+          next[postId] = ann
+        }
+        return next
+      }),
     setNotes: (postId: string, notes: string) => setStore((s) => upsertAnnotation(s, postId, { notes })),
     setFlags: (postId: string, flags: PostAnnotation['flags']) =>
       setStore((s) => upsertAnnotation(s, postId, { flags })),

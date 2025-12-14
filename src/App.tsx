@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSavedPosts } from './hooks/useSavedPosts'
 import type { NormalizedSavedPost } from './types'
 import { SearchBar } from './components/SearchBar'
@@ -99,6 +99,47 @@ function App() {
     annotations,
   ])
 
+  // If the user has an enriched CSV (my_* columns) but localStorage is empty, seed the annotation store.
+  useEffect(() => {
+    if (loading || error) return
+    if (!annotations.isEmpty()) return
+
+    const seed: Record<string, any> = {}
+    for (const post of posts) {
+      const hasAny =
+        (post.myTags && post.myTags.length > 0) ||
+        (post.myNotes && post.myNotes.trim()) ||
+        post.myNorthstar ||
+        (post.myLenses && post.myLenses.length > 0)
+      if (!hasAny) continue
+
+      seed[post.id] = {
+        postId: post.id,
+        tags: post.myTags ?? [],
+        notes: post.myNotes ?? '',
+        flags: { northstar: !!post.myNorthstar },
+        categories: post.myLenses ?? [],
+        updatedAt: new Date().toISOString(),
+      }
+    }
+
+    annotations.mergeSeed(seed)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, error, posts])
+
+  const exportAnnotations = () => {
+    const json = annotations.exportJson()
+    const blob = new Blob([json], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'annotations.json'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  }
+
   const toggleSelected = (post: NormalizedSavedPost) => {
     setSelectedIds((prev) => {
       const next = new Set(prev)
@@ -155,6 +196,17 @@ function App() {
             aria-selected={view === 'map'}
           >
             Map
+          </button>
+        </div>
+
+        <div className="app-tools">
+          <button
+            type="button"
+            className="app-selectbar-btn"
+            onClick={exportAnnotations}
+            title="Download your tags/notes/lenses as annotations.json (use scripts/enrich_saved_index_with_annotations.py to generate saved_index_enriched.csv)."
+          >
+            Export annotations
           </button>
         </div>
 
