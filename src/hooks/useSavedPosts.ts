@@ -110,6 +110,22 @@ export function useSavedPosts(): UseSavedPostsResult {
           if (results.errors && results.errors.length > 0) {
             console.error('CSV parse errors', results.errors)
           }
+
+          // Vite dev server will return index.html with HTTP 200 for missing static files.
+          // Validate that we actually received our expected CSV header, otherwise fall back.
+          const fields = results.meta?.fields ?? []
+          const hasExpectedSchema = fields.includes('json_filename') && fields.includes('media_files')
+          if (!hasExpectedSchema) {
+            console.warn(`Invalid CSV schema for ${path}. Got fields:`, fields)
+            if (onError) {
+              onError()
+              return
+            }
+            setError(`Invalid CSV response for ${path} (missing expected header).`)
+            setLoading(false)
+            return
+          }
+
           const data = (results.data ?? []).filter((row: SavedPost) => row && row.json_filename)
           const normalized = data.map(normalizePost)
           setPosts(normalized)
