@@ -31,11 +31,12 @@ function App() {
     direction_identity:
       'Direction / identity: work that reflects who you want to be professionally (patterns in what you’re drawn to).',
     skill_building:
-      'Skill building: techniques, tools, processes, and references you want to learn or practice.',
+      'Skills: techniques, tools, and processes you already have or want to learn/practice.',
     opportunity_hunting:
       'Opportunity hunting: leads to pursue—studios, artists, vendors, projects, or places you might reach out to.',
     portfolio_planning:
       'Portfolio planning: portfolio candidates—things you could document, recreate, or ship to show your capabilities.',
+    production: 'Production: projects you want to produce/lead/manage (solo or collaborative).',
   }
 
   const filteredPosts = useMemo(() => {
@@ -320,7 +321,7 @@ function App() {
               }
               title={categoryHelp.skill_building}
             >
-              Skill building
+              Skills
             </button>
             <button
               type="button"
@@ -358,6 +359,24 @@ function App() {
             >
               Portfolio planning
             </button>
+            <button
+              type="button"
+              className={
+                categoryFilters.includes('production')
+                  ? 'app-category-chip active'
+                  : 'app-category-chip'
+              }
+              onClick={() =>
+                setCategoryFilters((prev) =>
+                  prev.includes('production')
+                    ? prev.filter((c) => c !== 'production')
+                    : [...prev, 'production'],
+                )
+              }
+              title={categoryHelp.production}
+            >
+              Production
+            </button>
       </div>
           <label className="searchbar-toggle">
             <input
@@ -369,7 +388,7 @@ function App() {
           </label>
           <label
             className="searchbar-toggle"
-            title="Only show posts you’ve assigned to at least one career Lens (Direction/identity, Skill building, Opportunity hunting, Portfolio planning)."
+            title="Only show posts you’ve assigned to at least one career Lens (Direction/identity, Skills, Opportunity hunting, Portfolio planning, Production)."
           >
             <input
               type="checkbox"

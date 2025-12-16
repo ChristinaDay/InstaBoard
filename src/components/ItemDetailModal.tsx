@@ -36,11 +36,13 @@ export function ItemDetailModal({
     direction_identity:
       'Direction / identity: work that reflects who you want to be professionally (patterns in what you’re drawn to).',
     skill_building:
-      'Skill building: techniques, tools, processes, and references you want to learn or practice.',
+      'Skills: techniques, tools, and processes you already have or want to learn/practice.',
     opportunity_hunting:
       'Opportunity hunting: leads to pursue—studios, artists, vendors, projects, or places you might reach out to.',
     portfolio_planning:
       'Portfolio planning: portfolio candidates—things you could document, recreate, or ship to show your capabilities.',
+    production:
+      'Production: projects you want to produce/lead/manage (solo or collaborative).',
   }
 
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -164,7 +166,7 @@ export function ItemDetailModal({
                     onClick={() => toggleCategory('skill_building')}
                     title={categoryHelp.skill_building}
                   >
-                    Skill building
+                    Skills
                   </button>
                   <button
                     type="button"
@@ -189,6 +191,18 @@ export function ItemDetailModal({
                     title={categoryHelp.portfolio_planning}
                   >
                     Portfolio planning
+                  </button>
+                  <button
+                    type="button"
+                    className={
+                      categories.includes('production')
+                        ? 'curation-chip active'
+                        : 'curation-chip'
+                    }
+                    onClick={() => toggleCategory('production')}
+                    title={categoryHelp.production}
+                  >
+                    Production
                   </button>
                 </div>
               </div>

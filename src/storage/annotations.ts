@@ -8,6 +8,7 @@ export type AnnotationCategory =
   | 'skill_building'
   | 'opportunity_hunting'
   | 'portfolio_planning'
+  | 'production'
 
 export type PostAnnotation = {
   postId: string
@@ -29,6 +30,7 @@ function normalizeCategories(value: unknown): AnnotationCategory[] {
     'skill_building',
     'opportunity_hunting',
     'portfolio_planning',
+    'production',
   ]
 
   if (!Array.isArray(value)) return []
