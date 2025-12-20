@@ -17,7 +17,7 @@ function App() {
   const [videosOnly, setVideosOnly] = useState(false)
   const [hasLocationOnly, setHasLocationOnly] = useState(false)
   const [locationQuery, setLocationQuery] = useState('')
-  const [view, setView] = useState<'grid' | 'map' | 'insights'>('grid')
+  const [view, setView] = useState<'grid' | 'map'>('grid')
   const [tagQuery, setTagQuery] = useState('')
   const [northstarOnly, setNorthstarOnly] = useState(false)
   const [categoryFilters, setCategoryFilters] = useState<AnnotationCategory[]>([])
@@ -27,6 +27,7 @@ function App() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkTagDraft, setBulkTagDraft] = useState('')
   const [bulkTagStatus, setBulkTagStatus] = useState('')
+  const [insightsOpen, setInsightsOpen] = useState(true)
   const [insightsScope, setInsightsScope] = useState<'filtered' | 'all'>('filtered')
 
   const categoryHelp: Record<AnnotationCategory, string> = {
@@ -200,19 +201,6 @@ function App() {
           >
             Map
           </button>
-          <button
-            type="button"
-            className={view === 'insights' ? 'app-view-toggle-btn active' : 'app-view-toggle-btn'}
-            onClick={() => {
-              setView('insights')
-              setSelectionMode(false)
-              clearSelection()
-            }}
-            role="tab"
-            aria-selected={view === 'insights'}
-          >
-            Insights
-          </button>
         </div>
 
         <div className="app-tools">
@@ -223,6 +211,14 @@ function App() {
             title="Download your tags/notes/lenses as annotations.json (use scripts/enrich_saved_index_with_annotations.py to generate saved_index_enriched.csv)."
           >
             Export annotations
+          </button>
+          <button
+            type="button"
+            className="app-selectbar-btn"
+            onClick={() => setInsightsOpen((v) => !v)}
+            title="Show/hide Insights (top keywords, hashtags, creators, and your own tags/lenses)."
+          >
+            {insightsOpen ? 'Hide insights' : 'Show insights'}
           </button>
         </div>
 
@@ -414,7 +410,7 @@ function App() {
           </label>
         </div>
 
-        {view === 'insights' && (
+        {insightsOpen && (
           <InsightsPanel
             allPosts={posts}
             filteredPosts={filteredPosts}
