@@ -5,6 +5,7 @@ import { SearchBar } from './components/SearchBar'
 import { Gallery } from './components/Gallery'
 import { ItemDetailModal } from './components/ItemDetailModal'
 import { MapView } from './components/MapView'
+import { InsightsPanel } from './components/InsightsPanel'
 import { useAnnotations } from './hooks/useAnnotations'
 import type { AnnotationCategory } from './storage/annotations'
 import './index.css'
@@ -26,6 +27,8 @@ function App() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkTagDraft, setBulkTagDraft] = useState('')
   const [bulkTagStatus, setBulkTagStatus] = useState('')
+  const [insightsOpen, setInsightsOpen] = useState(true)
+  const [insightsScope, setInsightsScope] = useState<'filtered' | 'all'>('filtered')
 
   const categoryHelp: Record<AnnotationCategory, string> = {
     direction_identity:
@@ -208,6 +211,14 @@ function App() {
             title="Download your tags/notes/lenses as annotations.json (use scripts/enrich_saved_index_with_annotations.py to generate saved_index_enriched.csv)."
           >
             Export annotations
+          </button>
+          <button
+            type="button"
+            className="app-selectbar-btn"
+            onClick={() => setInsightsOpen((v) => !v)}
+            title="Show/hide Insights (top keywords, hashtags, creators, and your own tags/lenses)."
+          >
+            {insightsOpen ? 'Hide insights' : 'Show insights'}
           </button>
         </div>
 
@@ -398,6 +409,31 @@ function App() {
             <span>Career lenses only</span>
           </label>
         </div>
+
+        {insightsOpen && (
+          <InsightsPanel
+            allPosts={posts}
+            filteredPosts={filteredPosts}
+            annotationsStore={annotations.store}
+            scope={insightsScope}
+            onScopeChange={setInsightsScope}
+            lensHelp={categoryHelp}
+            onSetQuery={(value) => {
+              setQuery(value)
+              setView('grid')
+            }}
+            onSetTagQuery={(value) => {
+              setTagQuery(value)
+              setView('grid')
+            }}
+            onToggleLensFilter={(lens) =>
+              setCategoryFilters((prev) =>
+                prev.includes(lens) ? prev.filter((c) => c !== lens) : [...prev, lens],
+              )
+            }
+            onClearLensFilters={() => setCategoryFilters([])}
+          />
+        )}
 
         {loading && <p className="status-text">Loading saved posts…</p>}
         {error && !loading && <p className="status-text error">Error: {error}</p>}

@@ -172,6 +172,120 @@ a {
   color: #111827;
 }
 
+.insights-panel {
+  margin-top: 0.9rem;
+  padding: 0.9rem 0.95rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.06), rgba(255, 255, 255, 0.9));
+}
+
+.insights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.insights-title {
+  display: inline-flex;
+  gap: 0.55rem;
+  align-items: baseline;
+}
+
+.insights-subtitle {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.insights-controls {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+@media (max-width: 760px) {
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.insights-block {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 0.9rem;
+  padding: 0.75rem 0.75rem 0.85rem;
+}
+
+.insights-block-wide {
+  grid-column: 1 / -1;
+}
+
+.insights-block-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.insights-clear {
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: #ffffff;
+  color: #374151;
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.insights-clear:hover {
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.insights-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.insights-chip {
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: #ffffff;
+  color: #374151;
+  border-radius: 999px;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.insights-chip:hover {
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.insights-chip-count {
+  margin-left: 0.35rem;
+  color: #6b7280;
+  font-size: 0.82rem;
+}
+
+.insights-empty {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
 .app-view-toggle {
   display: inline-flex;
   gap: 0.35rem;
